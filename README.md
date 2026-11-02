@@ -2,11 +2,11 @@
 
 ![DockStacks 10 estable: Descargas desplegada con 70 elementos y los cuatro iconos propios](docs/capturas/09-portada-estable.webp)
 
-**Versión 10 estable · GNOME Shell 50 · Ubuntu Dock**
+**Versión 11 estable · GNOME Shell 50 · Ubuntu Dock**
 
 Carpetas y aplicaciones abiertas, a un clic del dock. Integra un stack de aplicaciones y accesos a **Descargas, Documentos e Imágenes**, con paneles de cuatro columnas y desplazamiento vertical.
 
-Versión aprobada por Manuel después de las pruebas en su equipo Ubuntu 26.04.1 LTS con GNOME Shell 50.1. La compatibilidad con otras versiones de GNOME o docks no está confirmada. Proyecto comunitario independiente de Ubuntu y GNOME.
+La base visual (versión 10) fue aprobada por Manuel después de las pruebas en su equipo Ubuntu 26.04.1 LTS con GNOME Shell 50.1. La compatibilidad con otras versiones de GNOME o docks no está confirmada. Proyecto comunitario independiente de Ubuntu y GNOME.
 
 ## Funciones
 
@@ -50,6 +50,18 @@ sudo apt install python3-gi gir1.2-gtk-4.0 gir1.2-adw-1 libglib2.0-bin
 
 Para instalar solo la extensión: `bash instalar.sh`. El UUID `carpetas-isla@manuel.local` se conserva desde las primeras versiones para actualizar instalaciones existentes.
 
+## Actualizaciones desde GitHub
+
+El gestor comprueba la última **Release estable** al abrirse y ofrece **Buscar actualizaciones**, **Ver cambios**, **Actualizar ahora** y **Más tarde**. No instala nada por su cuenta. No confunde cambios de `main`, borradores o versiones de prueba con publicaciones estables.
+
+El interruptor **Revisar actualizaciones diariamente** es opcional y está **desactivado por defecto**. Activarlo configura un temporizador `systemd --user` que puede avisar aunque el gestor esté cerrado. Desactivarlo detiene el temporizador y cualquier revisión en curso. No necesita sudo. Puedes comprobar manualmente en cualquier momento.
+
+**Actualizar ahora** descarga el paquete oficial, verifica el SHA-256 informado por GitHub, guarda un respaldo y conserva tus iconos, ajustes y estado de habilitación. Después pide cerrar el gestor y cerrar sesión. Si falla la instalación intenta restaurar los archivos anteriores. **Más tarde** pospone el aviso 24 horas; no impide una búsqueda o actualización manual.
+
+El gestor muestra los fallos de conexión sin afirmar que está actualizado. Si no hay ninguna Release publicada o su paquete aún no está disponible, lo indica. La primera instalación del sistema de actualizaciones requiere descargar e instalar esta versión; después las versiones nuevas se ofrecen desde el gestor.
+
+Consulta el [manual de botones](docs/MANUAL.md) y la [guía de publicación de Releases](docs/PUBLICAR-RELEASE.md).
+
 ## Uso y personalización
 
 Pulsa el stack para ver las aplicaciones abiertas. Un clic activa la aplicación o permite elegir una ventana; el clic derecho ofrece **Cerrar aplicación**. Los favoritos siguen en el dock y las aplicaciones sin anclar se agrupan en el stack.
@@ -78,7 +90,7 @@ Capturas reales facilitadas por Manuel, optimizadas a WebP.
 
 ## Validación y alcance
 
-El usuario confirmó el funcionamiento de la versión 10 y autorizó su publicación estable. Durante las pruebas se comprobaron habilitación/deshabilitación, preferencias, selección y restauración de iconos, identidad de la aplicación, scroll y cierre de aplicaciones desde el stack.
+El usuario confirmó el funcionamiento visual de la versión 10. La versión 11 añade el actualizador, con pruebas automatizadas y pendiente de comprobar el aviso real con la siguiente publicación. Durante las pruebas se comprobaron habilitación/deshabilitación, preferencias, selección y restauración de iconos, identidad de la aplicación, scroll y cierre de aplicaciones desde el stack.
 
 Las pruebas automatizadas verifican agrupación y activación, restauración de preferencias del dock, reserva de espacio, iconos personalizados y predeterminados, búsqueda de carpetas de iconos, restauración global y mantenimiento del stack al abrir su menú contextual. También se revisan sintaxis, esquemas compilados, transparencia de los recursos e integridad de los paquetes.
 
@@ -110,6 +122,6 @@ node tests/logica.mjs
 node tests/icon-paths.mjs
 ```
 
-Consulta el [historial de cambios](CHANGELOG.md) y las [notas de la versión 10 estable](RELEASE-NOTES-v10.md).
+Consulta el [historial de cambios](CHANGELOG.md) y las [notas de la versión 11](RELEASE-NOTES-v11.md).
 
 Autor: Manuel Gonzalez. Código bajo [licencia MIT](LICENSE). Las capturas documentan interfaces y marcas de terceros, que conservan sus derechos. Los iconos propios fueron creados con asistencia de IA para DockStacks.

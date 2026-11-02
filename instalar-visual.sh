@@ -10,6 +10,10 @@ spec=importlib.util.spec_from_file_location('dockstacks_manager',path)
 module=importlib.util.module_from_spec(spec)
 spec.loader.exec_module(module)
 module.save_launcher()
-print('DockStacks 10 estable instalado; acceso creado en el menú de aplicaciones.')
-print('Cierra sesión completamente y vuelve a entrar para cargar la extensión 10.')
+try:
+    module.updates.restore_timer()
+except Exception as error:
+    print(f'DockStacks instalado, pero no se pudo reactivar la revisión diaria: {error}')
+print('DockStacks 11 estable instalado; acceso creado en el menú de aplicaciones.')
+print('Cierra sesión completamente y vuelve a entrar para cargar la extensión 11.')
 PY

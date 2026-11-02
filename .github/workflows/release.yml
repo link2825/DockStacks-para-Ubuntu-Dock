@@ -1,0 +1,46 @@
+name: Publicar Release estable
+on:
+  push:
+    branches: [main]
+    paths:
+      - version.json
+      - .github/workflows/release.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: dockstacks-release
+  cancel-in-progress: false
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Probar y empaquetar
+        id: package
+        shell: bash
+        run: |
+          node tests/logica.mjs
+          node tests/icon-paths.mjs
+          python3 -m unittest discover -s tests -p 'test_updates.py' -v
+          python3 -m py_compile dockstacks.py updates.py
+          for script in instalar.sh instalar-visual.sh abrir-instalador.sh; do bash -n "$script"; done
+          python3 empaquetar.py
+          release_tag=$(python3 build-release.py)
+          echo "tag=$release_tag" >> "$GITHUB_OUTPUT"
+      - name: Crear etiqueta y Release con paquete verificable
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.package.outputs.tag }}
+        shell: bash
+        run: |
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            echo "La Release ya existe; se conserva sin modificar."
+            exit 0
+          fi
+          gh release create "$RELEASE_TAG" \
+            --target "$GITHUB_SHA" \
+            --title "DockStacks $RELEASE_TAG estable" \
+            --notes-file dist/release-notes.md \
+            --latest \
+            "dist/DockStacks-$RELEASE_TAG.zip" dist/SHA256SUMS

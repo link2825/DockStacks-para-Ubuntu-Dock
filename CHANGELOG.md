@@ -2,6 +2,17 @@
 
 La versión 10 es la primera publicación estable aprobada por el usuario. Las versiones 1–9 fueron iteraciones de desarrollo y pruebas.
 
+## Versión 11 — Actualizaciones opcionales
+
+- Busca Releases estables al abrir y mediante botón manual.
+- Revisión diaria opcional, desactivada inicialmente; activación y detención desde el gestor.
+- Notificación de escritorio sin mantener abierto el gestor, si el usuario habilita la revisión diaria.
+- Aviso de nueva versión, notas, actualización manual y posposición de 24 horas.
+- Verificación SHA-256, validación del ZIP, respaldo y recuperación de archivos ante fallo.
+- Conserva personalizaciones y estado de habilitación.
+- GitHub Actions publica etiquetas, Releases y paquetes al cambiar version.json.
+- Pruebas del actualizador y manual de botones. El aviso real se verificará con la siguiente Release.
+
 ## Versión 10 — Estable
 
 - Publicación autorizada después de la confirmación funcional del usuario.
