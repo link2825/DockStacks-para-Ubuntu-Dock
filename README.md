@@ -1,6 +1,6 @@
 # DockStacks para Ubuntu Dock · GNOME 50
 
-![DockStacks con el panel de aplicaciones abiertas](docs/capturas/05-stack-aplicaciones.webp)
+![DockStacks: Descargas desplegada con cuatro columnas y desplazamiento](docs/capturas/04-scroll-confirmado.webp)
 
 Extensión comunitaria que añade **Descargas, Documentos e Imágenes dentro de Ubuntu Dock**, separadas de las aplicaciones por una línea, junto a un **stack de aplicaciones abiertas**. Un clic abre un panel para explorar la carpeta y abrir archivos con sus aplicaciones predeterminadas.
 
