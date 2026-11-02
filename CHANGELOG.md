@@ -2,6 +2,16 @@
 
 La versión 10 es la primera publicación estable aprobada por el usuario. Las versiones 1–9 fueron iteraciones de desarrollo y pruebas.
 
+## Versión 12 — Títulos visibles en los controles (2 de noviembre de 2026)
+
+- Corrige los títulos de Aplicaciones abiertas, Descargas, Documentos e Imágenes al pasar el ratón.
+- Usa el estilo nativo dash-label, capa superior y medición del tamaño preferido antes de posicionar.
+- Evita que la etiqueta quede debajo del dock y que la salida tardía de otro botón la oculte.
+- Limita la posición al monitor y limpia la etiqueta al destruir controles.
+- Añade pruebas de regresión y documentación con capturas previas y plan de actualización 11 → 12.
+- La revisión diaria sigue siendo opcional y conserva la elección del usuario.
+- Pendiente de confirmar el resultado visual y el flujo de actualización real en el equipo del usuario.
+
 ## Versión 11 — Actualizaciones opcionales
 
 - Busca Releases estables al abrir y mediante botón manual.

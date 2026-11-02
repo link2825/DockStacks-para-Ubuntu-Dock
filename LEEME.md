@@ -1,4 +1,4 @@
-# DockStacks 11 estable
+# DockStacks 12 estable
 
 Descomprime el proyecto, abre una terminal en esta carpeta y ejecuta:
 
@@ -13,3 +13,5 @@ Conserva tus personalizaciones al actualizar. Requiere GNOME Shell 50 y Ubuntu D
 Consulta README.md para requisitos, funciones y limitaciones. Versión aprobada por el usuario después de sus pruebas en Ubuntu 26.04.1 LTS / GNOME 50.1.
 
 Incluye actualizaciones desde Releases de GitHub. La revisión diaria es opcional y está desactivada inicialmente. Usa Buscar actualizaciones para revisar manualmente. Consulta docs/MANUAL.md.
+
+Si ya tienes la versión 11, para probar el actualizador usa Buscar actualizaciones y Actualizar ahora en el gestor. Después cierra sesión. La versión 12 corrige los títulos al pasar el ratón; consulta RELEASE-NOTES-v12.md.

@@ -135,8 +135,8 @@ class UpdateTests(unittest.TestCase):
         updates.EXTENSION.mkdir()
         (updates.EXTENSION/'metadata.json').write_text('{"version":10}')
         self.assertEqual(updates.installed_version(),(10,0,0))
-        (updates.EXTENSION/'metadata.json').write_text('{"version":12}')
-        self.assertEqual(updates.installed_version(),(11,0,0))
+        (updates.EXTENSION/'metadata.json').write_text(json.dumps({'version':99}))
+        self.assertEqual(updates.installed_version(),updates.version_tuple(updates.APP_VERSION))
 
     def test_full_verified_download_reaches_installer(self):
         metadata={'uuid':updates.UUID,'version':12}

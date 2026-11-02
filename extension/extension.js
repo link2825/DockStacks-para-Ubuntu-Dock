@@ -268,31 +268,60 @@ export default class FolderIsland extends Extension {
             : app.create_icon_texture(size);
     }
 
-    _hideTooltip() {
+    _hideTooltip(button = null) {
+        if (button && this._tooltipOwner !== button) return;
         this._tooltip?.hide();
+        this._tooltipOwner = null;
+    }
+
+    _showTooltip(button, text) {
+        if (!this._alive || !button.hover || button.mapped === false) return;
+        if (!this._tooltip) {
+            this._tooltip = new St.Label({style_class: 'dash-label',
+                reactive: false, visible: false});
+            // Track it as top chrome so dock clipping/stacking cannot hide it.
+            Main.layoutManager.addTopChrome(this._tooltip, {affectsInputRegion: false});
+        }
+        const label = this._tooltip;
+        this._tooltipOwner = button;
+        label.text = text;
+        label.opacity = 255;
+        label.show();
+        // A newly created label has no allocation yet. Measure its preferred
+        // size instead of using get_transformed_size() (which can be 0, 0).
+        const monitor = Main.layoutManager.primaryMonitor;
+        const margin = 8;
+        const [, naturalWidth] = label.get_preferred_width(-1);
+        const width = Math.min(naturalWidth, Math.max(1, monitor.width - margin * 2));
+        const [, naturalHeight] = label.get_preferred_height(width);
+        label.set_size(width, naturalHeight);
+        const [x, y] = button.get_transformed_position();
+        const [buttonWidth, buttonHeight] = button.get_transformed_size();
+        let tipX = x + (buttonWidth - width) / 2;
+        let tipY = y - naturalHeight - margin;
+        if (this._dash?._isHorizontal === false) {
+            tipX = x < monitor.x + monitor.width / 2
+                ? x + buttonWidth + margin : x - width - margin;
+            tipY = y + (buttonHeight - naturalHeight) / 2;
+        } else if (tipY < monitor.y + margin) {
+            tipY = y + buttonHeight + margin;
+        }
+        tipX = Math.max(monitor.x + margin,
+            Math.min(tipX, monitor.x + monitor.width - width - margin));
+        tipY = Math.max(monitor.y + margin,
+            Math.min(tipY, monitor.y + monitor.height - naturalHeight - margin));
+        label.set_position(Math.round(tipX), Math.round(tipY));
+        // Ubuntu Dock may recreate/reorder its chrome while we are active.
+        label.get_parent()?.set_child_above_sibling(label, null);
     }
 
     _addTooltip(button, text) {
         button.track_hover = true;
         button.connect('notify::hover', () => {
-            if (!button.hover) { this._hideTooltip(); return; }
-            if (!this._tooltip) {
-                this._tooltip = new St.Label({style_class: 'ci-tooltip', reactive: false});
-                this._tooltip.clutter_text.line_wrap = true;
-                Main.uiGroup.add_child(this._tooltip);
-            }
-            this._tooltip.text = text;
-            this._tooltip.show();
-            const [x, y] = button.get_transformed_position();
-            const [width, height] = button.get_transformed_size();
-            const monitor = Main.layoutManager.primaryMonitor;
-            const [tipWidth, tipHeight] = this._tooltip.get_transformed_size();
-            const tipX = Math.max(monitor.x + 8, Math.min(x + (width - tipWidth) / 2,
-                monitor.x + monitor.width - tipWidth - 8));
-            const tipY = y - tipHeight - 8 >= monitor.y ? y - tipHeight - 8 : y + height + 8;
-            this._tooltip.set_position(tipX, Math.min(tipY, monitor.y + monitor.height - tipHeight - 8));
+            if (button.hover) this._showTooltip(button, text);
+            else this._hideTooltip(button);
         });
-        button.connect('destroy', () => this._hideTooltip());
+        button.connect('destroy', () => this._hideTooltip(button));
     }
 
     _closeApplication(app) {
@@ -486,6 +515,7 @@ export default class FolderIsland extends Extension {
         this._destroyAppContext();
         this._tooltip?.destroy();
         this._tooltip = null;
+        this._tooltipOwner = null;
         for (const state of this._menus ?? []) {
             state.cancellable?.cancel();
             state.menu.close(false);

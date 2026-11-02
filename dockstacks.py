@@ -100,7 +100,7 @@ class Manager(Adw.Application):
         if self.get_active_window():
             self.get_active_window().present()
             return
-        self.window = Adw.ApplicationWindow(application=self, title='DockStacks · estable 11',
+        self.window = Adw.ApplicationWindow(application=self, title='DockStacks · estable 12',
                                            default_width=620, default_height=780)
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         box.append(Adw.HeaderBar())
@@ -350,5 +350,5 @@ if __name__ == '__main__':
     GLib.set_application_name('DockStacks')
     GLib.set_prgname('com.github.link2825.DockStacks')
     Gtk.Window.set_default_icon_name('com.github.link2825.DockStacks')
-    print('DockStacks: iniciando gestor de estable 11', flush=True)
+    print('DockStacks: iniciando gestor de estable 12', flush=True)
     sys.exit(Manager().run(sys.argv))

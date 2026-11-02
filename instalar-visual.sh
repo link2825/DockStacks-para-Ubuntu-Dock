@@ -14,6 +14,6 @@ try:
     module.updates.restore_timer()
 except Exception as error:
     print(f'DockStacks instalado, pero no se pudo reactivar la revisión diaria: {error}')
-print('DockStacks 11 estable instalado; acceso creado en el menú de aplicaciones.')
-print('Cierra sesión completamente y vuelve a entrar para cargar la extensión 11.')
+print('DockStacks 12 estable instalado; acceso creado en el menú de aplicaciones.')
+print('Cierra sesión completamente y vuelve a entrar para cargar la extensión 12.')
 PY

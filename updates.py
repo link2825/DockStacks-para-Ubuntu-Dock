@@ -21,7 +21,7 @@ import zipfile
 
 REPO = 'link2825/DockStacks-para-Ubuntu-Dock'
 UUID = 'carpetas-isla@manuel.local'
-APP_VERSION = '11.0.0'
+APP_VERSION = '12.0.0'
 ROOT = Path(__file__).resolve().parent
 DATA = Path(os.environ.get('XDG_DATA_HOME', str(Path.home() / '.local/share')))
 CONFIG = Path(os.environ.get('XDG_CONFIG_HOME', str(Path.home() / '.config')))

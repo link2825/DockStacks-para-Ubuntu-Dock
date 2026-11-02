@@ -175,3 +175,75 @@ assert.equal(child.destroyed, true);
 assert.equal(contextRemoved, 1);
 assert.equal(extension._appContext, null);
 console.log('OK: menú anclado al icono, stack conservado al abrir y cerrar aplicación, limpieza del contexto');
+
+// Regression: a new label has no transformed allocation; use preferred size
+// and top chrome so its text is visible above the dock instead of underneath it.
+const tooltipExtension = new FolderIsland();
+tooltipExtension._alive = true;
+tooltipExtension._dash = {_isHorizontal: true};
+let topChromeAdded = 0;
+let raised = 0;
+let tooltipDestroyed = 0;
+context.Main.layoutManager = {
+    primaryMonitor: {x: 0, y: 0, width: 1920, height: 1080},
+    addTopChrome(label, options) {
+        assert.equal(options.affectsInputRegion, false);
+        topChromeAdded++;
+    },
+};
+context.St.Label = class {
+    constructor(options) { this.options = options; this.visible = false; }
+    get_transformed_size() { return [0, 0]; }
+    get_preferred_width() { return [50, 180]; }
+    get_preferred_height() { return [28, 28]; }
+    set_size(width, height) { this.size = [width, height]; }
+    set_position(x, y) { this.position = [x, y]; }
+    get_parent() { return {set_child_above_sibling: () => {raised++;}}; }
+    show() { this.visible = true; }
+    hide() { this.visible = false; }
+    destroy() { tooltipDestroyed++; }
+};
+const dockButton = (x=1400, y=1015) => ({
+    hover: true, mapped: true, signals: {},
+    connect(signal, callback) { this.signals[signal] = callback; },
+    get_transformed_position: () => [x, y],
+    get_transformed_size: () => [48, 48],
+});
+let previous;
+for (const title of ['Aplicaciones abiertas', 'Descargas', 'Documentos', 'Imágenes']) {
+    const button = dockButton();
+    tooltipExtension._addTooltip(button, title);
+    button.signals['notify::hover']();
+    assert.equal(tooltipExtension._tooltip.text, title);
+    assert.equal(tooltipExtension._tooltip.options.style_class, 'dash-label');
+    assert.deepEqual(tooltipExtension._tooltip.size, [180, 28]);
+    assert.equal(tooltipExtension._tooltip.position[1], 979);
+    assert.equal(tooltipExtension._tooltip.visible, true);
+    if (previous) {
+        previous.hover = false;
+        previous.signals['notify::hover']();
+        assert.equal(tooltipExtension._tooltip.visible, true);
+    }
+    previous = button;
+}
+assert.equal(topChromeAdded, 1);
+assert.equal(raised, 4);
+previous.hover = false;
+previous.signals['notify::hover']();
+assert.equal(tooltipExtension._tooltip.visible, false);
+const topButton = dockButton(0, 8);
+tooltipExtension._showTooltip(topButton, 'Descargas');
+assert.equal(tooltipExtension._tooltip.position[0], 8);
+assert.equal(tooltipExtension._tooltip.position[1], 64);
+tooltipExtension._dash._isHorizontal = false;
+tooltipExtension._showTooltip(topButton, 'Descargas');
+assert.equal(tooltipExtension._tooltip.position[0], 56);
+topButton.mapped = false;
+tooltipExtension._hideTooltip();
+tooltipExtension._showTooltip(topButton, 'No mostrar');
+assert.equal(tooltipExtension._tooltip.visible, false);
+tooltipExtension._menus = [];
+tooltipExtension._clearMenus();
+assert.equal(tooltipDestroyed, 1);
+assert.equal(tooltipExtension._tooltip, null);
+console.log('OK: cuatro títulos nativos, medición inicial, capa superior, cambio de hover, bordes y limpieza');

@@ -29,6 +29,10 @@ Si activas la revisión diaria, se utilizan unidades `dockstacks-updates.timer` 
 
 La notificación informa de la versión y te pide abrir DockStacks para actualizar. Una versión ya notificada no genera avisos repetidos. Si la red falla, no cambia el estado de la extensión.
 
+## Títulos de los controles
+
+Al pasar el ratón por los cuatro controles aparecen Aplicaciones abiertas, Descargas, Documentos e Imágenes. La versión 12 corrige su visibilidad y los sitúa fuera del botón con el estilo nativo del dock.
+
 ## Después de actualizar
 
 Cierra DockStacks y cierra sesión completamente. Al volver a entrar, abre el gestor y comprueba la nueva versión. No es necesario cerrar sesión para habilitar/deshabilitar o personalizar iconos.

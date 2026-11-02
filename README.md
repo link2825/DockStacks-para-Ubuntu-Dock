@@ -2,7 +2,7 @@
 
 ![DockStacks 10 estable: Descargas desplegada con 70 elementos y los cuatro iconos propios](docs/capturas/09-portada-estable.webp)
 
-**Versión 11 estable · GNOME Shell 50 · Ubuntu Dock**
+**Versión 12 estable · GNOME Shell 50 · Ubuntu Dock**
 
 Carpetas y aplicaciones abiertas, a un clic del dock. Integra un stack de aplicaciones y accesos a **Descargas, Documentos e Imágenes**, con paneles de cuatro columnas y desplazamiento vertical.
 
@@ -12,7 +12,7 @@ La base visual (versión 10) fue aprobada por Manuel después de las pruebas en 
 
 - **Aplicaciones abiertas:** contador por aplicación, activación de ventanas y selector por título cuando hay varias.
 - **Clic derecho sobre una aplicación:** menú anclado al icono con **Cerrar aplicación**, manteniendo visible el stack. Solicita cierre normal, sin forzar la pérdida de documentos.
-- **Nombres al pasar el ratón** por los controles del dock y las aplicaciones del stack.
+- **Nombres al pasar el ratón** por los controles del dock y las aplicaciones del stack; la versión 12 corrige su visibilidad con etiquetas nativas sobre el dock.
 - **Carpetas:** lista completa de elementos no ocultos, cuatro columnas, scroll y apertura con las aplicaciones predeterminadas.
 - **Gestor visual:** instalar/actualizar, habilitar/deshabilitar, consultar estado y personalizar iconos.
 - **Iconos propios:** identidad de DockStacks y cuatro diseños para aplicaciones, Descargas, Documentos e Imágenes.
@@ -88,6 +88,12 @@ Capturas reales facilitadas por Manuel, optimizadas a WebP.
 
 ![Panel de Descargas con scroll, 70 elementos y nuevos iconos integrados](docs/capturas/09-portada-estable.webp)
 
+## Corrección de títulos — versión 12
+
+La versión 12 mejora la visibilidad de los títulos de los cuatro controles. Incluye pruebas de medición, posición y cambio entre iconos. Consulta el [detalle de la incidencia y plan de prueba](docs/CAMBIO-v12-TITULOS.md).
+
+Para probar el actualizador desde la versión 11: **Buscar actualizaciones → Ver cambios → Actualizar ahora**. Tras instalar, cierra el gestor y cierra sesión. La revisión diaria permanece opcional y conserva su estado anterior.
+
 ## Validación y alcance
 
 El usuario confirmó el funcionamiento visual de la versión 10. La versión 11 añade el actualizador, con pruebas automatizadas y pendiente de comprobar el aviso real con la siguiente publicación. Durante las pruebas se comprobaron habilitación/deshabilitación, preferencias, selección y restauración de iconos, identidad de la aplicación, scroll y cierre de aplicaciones desde el stack.
@@ -122,6 +128,6 @@ node tests/logica.mjs
 node tests/icon-paths.mjs
 ```
 
-Consulta el [historial de cambios](CHANGELOG.md) y las [notas de la versión 11](RELEASE-NOTES-v11.md).
+Consulta el [historial de cambios](CHANGELOG.md) y las [notas de la versión 12](RELEASE-NOTES-v12.md).
 
 Autor: Manuel Gonzalez. Código bajo [licencia MIT](LICENSE). Las capturas documentan interfaces y marcas de terceros, que conservan sus derechos. Los iconos propios fueron creados con asistencia de IA para DockStacks.
