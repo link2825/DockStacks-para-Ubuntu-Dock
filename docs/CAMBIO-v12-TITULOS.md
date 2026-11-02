@@ -29,4 +29,15 @@ Verificar que se conservaron iconos personalizados, habilitación y la preferenc
 
 ## Resultado disponible
 
-Pruebas de lógica y empaquetado superadas. Validación visual y actualización real 11 → 12 pendientes del usuario.
+Pruebas de lógica y empaquetado superadas. Actualización real 11 → 12 confirmada por el usuario; falta comprobar los títulos después de cerrar sesión.
+
+
+## Evidencia del actualizador real — 2 de noviembre de 2026
+
+Manuel confirmó que la versión 11 detectó v12.0.0 y completó la actualización desde el gestor, sin instalar un ZIP manualmente. Las capturas muestran la detección y la confirmación de instalación con la extensión 12 en disco.
+
+![El gestor 11 detecta la Release v12.0.0](capturas/12-actualizacion-detectada.webp)
+
+![Instalación de v12.0.0 completada desde el gestor](capturas/13-actualizacion-instalada.webp)
+
+La ventana sigue mostrando «estable 11» porque ese proceso continúa cargado hasta cerrarlo. La comprobación de los títulos y de la versión activa después de cerrar sesión sigue pendiente. La revisión diaria permanece desactivada en las capturas.
