@@ -42,6 +42,9 @@ export default class FolderIsland extends Extension {
         this._menus = [];
         this._buttons = [];
         this._settings = this.getSettings();
+        this._iconsChanged = this._settings.connect('changed', (_settings, key) => {
+            if (key.startsWith('icon-')) this._updateIcons();
+        });
         this._enableStackMode();
         this._manager = new PopupMenu.PopupMenuManager(Main.layoutManager);
         this._overviewShow = Main.overview.connect('showing', () => {
@@ -53,6 +56,27 @@ export default class FolderIsland extends Extension {
             this._syncDock();
             return GLib.SOURCE_CONTINUE;
         });
+    }
+
+    _defaultIcon(key) {
+        return Gio.FileIcon.new(this.dir.get_child('assets').get_child(`${key}.png`));
+    }
+
+    _applyIcon(actor) {
+        const value = this._settings.get_string(actor._dockStacksKey).trim();
+        try {
+            if (value.startsWith('/') && GLib.file_test(value, GLib.FileTest.IS_REGULAR))
+                actor.gicon = Gio.FileIcon.new(Gio.File.new_for_path(value));
+            else
+                actor.gicon = value && !value.startsWith('/')
+                    ? Gio.ThemedIcon.new(value) : this._defaultIcon(actor._dockStacksKey);
+        } catch (_) {
+            actor.gicon = this._defaultIcon(actor._dockStacksKey);
+        }
+    }
+
+    _updateIcons() {
+        for (const actor of this._buttons) this._applyIcon(actor);
     }
 
     _findDock() {
@@ -127,6 +151,10 @@ export default class FolderIsland extends Extension {
                 x_align: Clutter.ActorAlign.CENTER, y_align: Clutter.ActorAlign.CENTER});
             const image = new St.Icon({icon_name: icon, icon_size: this._dash.iconSize});
             button.set_child(image);
+            this._addTooltip(button, title);
+            image._dockStacksKey = `icon-${fallback.toLowerCase()}`;
+            image._dockStacksFallback = icon;
+            this._applyIcon(image);
             this._buttons.push(image);
             this._island.add_child(button);
             const menu = new PopupMenu.PopupMenu(button, 0.5, side);
@@ -143,7 +171,7 @@ export default class FolderIsland extends Extension {
                 // This is the same hook used by the dock's application menus.
                 this._dash?.emit(open ? 'menu-opened' : 'menu-closed');
                 if (open) this._populate(state);
-                else { state.cancellable?.cancel(); state.cancellable = null; }
+                else { state.cancellable?.cancel(); state.cancellable = null; this._hideTooltip(); }
             });
         }
     }
@@ -226,11 +254,96 @@ export default class FolderIsland extends Extension {
         this._lastBudget = null;
     }
 
+    _isDockStacks(app) {
+        return String(app.get_id?.() ?? app.get_name()).toLowerCase().includes('com.github.link2825.dockstacks');
+    }
+
+    _appName(app) {
+        return this._isDockStacks(app) ? 'DockStacks' : app.get_name();
+    }
+
+    _appIcon(app, size) {
+        return this._isDockStacks(app)
+            ? new St.Icon({gicon: Gio.FileIcon.new(this.dir.get_child('assets').get_child('dockstacks.png')), icon_size: size})
+            : app.create_icon_texture(size);
+    }
+
+    _hideTooltip() {
+        this._tooltip?.hide();
+    }
+
+    _addTooltip(button, text) {
+        button.track_hover = true;
+        button.connect('notify::hover', () => {
+            if (!button.hover) { this._hideTooltip(); return; }
+            if (!this._tooltip) {
+                this._tooltip = new St.Label({style_class: 'ci-tooltip', reactive: false});
+                this._tooltip.clutter_text.line_wrap = true;
+                Main.uiGroup.add_child(this._tooltip);
+            }
+            this._tooltip.text = text;
+            this._tooltip.show();
+            const [x, y] = button.get_transformed_position();
+            const [width, height] = button.get_transformed_size();
+            const monitor = Main.layoutManager.primaryMonitor;
+            const [tipWidth, tipHeight] = this._tooltip.get_transformed_size();
+            const tipX = Math.max(monitor.x + 8, Math.min(x + (width - tipWidth) / 2,
+                monitor.x + monitor.width - tipWidth - 8));
+            const tipY = y - tipHeight - 8 >= monitor.y ? y - tipHeight - 8 : y + height + 8;
+            this._tooltip.set_position(tipX, Math.min(tipY, monitor.y + monitor.height - tipHeight - 8));
+        });
+        button.connect('destroy', () => this._hideTooltip());
+    }
+
+    _closeApplication(app) {
+        this._hideTooltip();
+        this._appContext?.close();
+        const timestamp = global.get_current_time();
+        for (const window of app.get_windows()) {
+            if (!window.skip_taskbar && window.can_close()) window.delete(timestamp);
+        }
+    }
+
+    _destroyAppContext() {
+        const menu = this._appContext;
+        const manager = this._contextManager;
+        this._appContext = null;
+        this._contextManager = null;
+        if (menu) {
+            menu.close(false);
+            manager?.removeMenu(menu);
+            menu.destroy();
+        }
+    }
+
+    _showAppContext(app, button) {
+        this._hideTooltip();
+        this._destroyAppContext();
+        // A separate manager owns a nested modal grab. Registering this menu
+        // with the stack's manager would close the stack when it opens.
+        const menu = new PopupMenu.PopupMenu(button, 0.5, St.Side.BOTTOM);
+        menu.actor.add_style_class_name('ci-popup');
+        Main.uiGroup.add_child(menu.actor);
+        menu.actor.hide();
+        this._appContext = menu;
+        this._contextManager = new PopupMenu.PopupMenuManager(button);
+        this._contextManager.addMenu(menu);
+        menu.addMenuItem(new PopupMenu.PopupMenuItem(this._appName(app), {reactive: false}));
+        const close = new PopupMenu.PopupMenuItem('Cerrar aplicación');
+        close.setSensitive(app.get_windows().some(window => !window.skip_taskbar && window.can_close()));
+        close.connect('activate', () => this._closeApplication(app));
+        menu.addMenuItem(close);
+        menu.connect('open-state-changed', (_menu, open) => {
+            if (!open) this._stackSignature = null;
+        });
+        menu.open();
+    }
+
     _runningEntries() {
         return Shell.AppSystem.get_default().get_running()
             .map(app => ({app, windows: app.get_windows().filter(window => !window.skip_taskbar)}))
             .filter(entry => entry.windows.length > 0)
-            .sort((a, b) => a.app.get_name().localeCompare(b.app.get_name(), 'es', {numeric: true}));
+            .sort((a, b) => this._appName(a.app).localeCompare(this._appName(b.app), 'es', {numeric: true}));
     }
 
     _createStack(side) {
@@ -238,12 +351,16 @@ export default class FolderIsland extends Extension {
             can_focus: true, accessible_name: 'Aplicaciones abiertas', track_hover: true});
         const content = new St.Widget({layout_manager: new Clutter.BinLayout()});
         const icon = new St.Icon({icon_name: 'view-grid-symbolic', icon_size: this._dash.iconSize});
+        icon._dockStacksKey = 'icon-stack';
+        icon._dockStacksFallback = 'view-grid-symbolic';
+        this._applyIcon(icon);
         this._buttons.push(icon);
         content.add_child(icon);
         this._runningBadge = new St.Label({text: '0', style_class: 'ci-running-count',
             x_align: Clutter.ActorAlign.END, y_align: Clutter.ActorAlign.END});
         content.add_child(this._runningBadge);
         button.set_child(content);
+        this._addTooltip(button, 'Aplicaciones abiertas');
         this._island.add_child(button);
         const menu = new PopupMenu.PopupMenu(button, 0.5, side);
         menu.actor.add_style_class_name('ci-popup');
@@ -258,7 +375,7 @@ export default class FolderIsland extends Extension {
         menu.connect('open-state-changed', (_menu, open) => {
             this._dash?.emit(open ? 'menu-opened' : 'menu-closed');
             if (open) this._populateStack(this._runningEntries());
-            else this._stackSignature = null;
+            else { this._destroyAppContext(); this._stackSignature = null; this._hideTooltip(); }
         });
     }
 
@@ -269,7 +386,7 @@ export default class FolderIsland extends Extension {
         if (this._runningBadge.text !== count) this._runningBadge.text = count;
         const signature = JSON.stringify(entries.map(({app, windows}) => [app.get_id(),
             windows.map(window => [window.get_id(), window.get_title()])]));
-        if (this._stackState.menu.isOpen && signature !== this._stackSignature && !this._stackWindows)
+        if (this._stackState.menu.isOpen && signature !== this._stackSignature && !this._stackWindows && !this._appContext?.isOpen)
             this._populateStack(entries);
         this._stackSignature = signature;
     }
@@ -298,6 +415,7 @@ export default class FolderIsland extends Extension {
     }
 
     _populateStack(entries) {
+        this._destroyAppContext();
         const {menu} = this._stackState;
         this._stackWindows = false;
         menu.removeAll();
@@ -308,18 +426,21 @@ export default class FolderIsland extends Extension {
         }
         const layout = this._stackGrid(menu);
         entries.forEach(({app, windows}, index) => {
-            const button = new St.Button({style_class: 'ci-tile', reactive: true, can_focus: true,
-                accessible_name: `${app.get_name()}, ${windows.length} ventanas`});
+            const button = new St.Button({style_class: 'ci-tile', reactive: true, can_focus: true, button_mask: St.ButtonMask.ONE | St.ButtonMask.THREE,
+                accessible_name: `${this._appName(app)}, ${windows.length} ventanas`});
             const content = new St.BoxLayout({orientation: Clutter.Orientation.VERTICAL,
                 style_class: 'ci-tile-box'});
-            content.add_child(app.create_icon_texture(38));
-            const label = new St.Label({text: app.get_name(), style_class: 'ci-file-label'});
+            content.add_child(this._appIcon(app, 38));
+            const label = new St.Label({text: this._appName(app), style_class: 'ci-file-label'});
             label.clutter_text.ellipsize = Pango.EllipsizeMode.END;
             content.add_child(label);
             content.add_child(new St.Label({text: `${windows.length} ${windows.length === 1 ? 'ventana' : 'ventanas'}`,
                 style_class: 'ci-window-count', x_align: Clutter.ActorAlign.CENTER}));
             button.set_child(content);
-            button.connect('clicked', () => {
+            this._addTooltip(button, this._appName(app));
+            button.connect('clicked', (_button, mouseButton) => {
+                if (mouseButton === Clutter.BUTTON_SECONDARY) { this._showAppContext(app, button); return; }
+                this._hideTooltip();
                 const current = app.get_windows().filter(window => !window.skip_taskbar);
                 if (current.length === 1) this._activateWindow(current[0]);
                 else if (current.length > 1) this._populateWindows(app, current);
@@ -330,6 +451,7 @@ export default class FolderIsland extends Extension {
     }
 
     _populateWindows(app, windows) {
+        this._destroyAppContext();
         const {menu} = this._stackState;
         this._stackWindows = true;
         menu.removeAll();
@@ -339,15 +461,15 @@ export default class FolderIsland extends Extension {
         backButton.connect('clicked', () => this._populateStack(this._runningEntries()));
         heading.add_child(backButton);
         menu.addMenuItem(heading);
-        menu.addMenuItem(new PopupMenu.PopupMenuItem(app.get_name(), {reactive: false}));
+        menu.addMenuItem(new PopupMenu.PopupMenuItem(this._appName(app), {reactive: false}));
         const layout = this._stackGrid(menu);
         windows.forEach((window, index) => {
             const button = new St.Button({style_class: 'ci-tile', reactive: true, can_focus: true,
-                accessible_name: window.get_title() ?? app.get_name()});
+                accessible_name: window.get_title() ?? this._appName(app)});
             const content = new St.BoxLayout({orientation: Clutter.Orientation.VERTICAL,
                 style_class: 'ci-tile-box'});
-            content.add_child(app.create_icon_texture(38));
-            const label = new St.Label({text: window.get_title() ?? app.get_name(), style_class: 'ci-file-label'});
+            content.add_child(this._appIcon(app, 38));
+            const label = new St.Label({text: window.get_title() ?? this._appName(app), style_class: 'ci-file-label'});
             label.clutter_text.ellipsize = Pango.EllipsizeMode.END;
             content.add_child(label);
             button.set_child(content);
@@ -361,6 +483,9 @@ export default class FolderIsland extends Extension {
     }
 
     _clearMenus() {
+        this._destroyAppContext();
+        this._tooltip?.destroy();
+        this._tooltip = null;
         for (const state of this._menus ?? []) {
             state.cancellable?.cancel();
             state.menu.close(false);
@@ -493,6 +618,8 @@ export default class FolderIsland extends Extension {
         this._removeIsland();
         this._restoreStackMode();
         this._manager = null;
+        if (this._iconsChanged) this._settings.disconnect(this._iconsChanged);
+        this._iconsChanged = 0;
         this._settings = null;
     }
 }

@@ -22,3 +22,12 @@
 .ci-running { background-color: #53518c; }
 .ci-running-count { font-size: 10px; color: white; background-color: #25243f; border-radius: 6px; padding: 0 3px; }
 .ci-window-count { font-size: 10px; color: #b8b9ca; }
+
+.ci-tooltip {
+    background-color: rgba(25, 25, 30, 0.97);
+    color: white;
+    border-radius: 8px;
+    padding: 8px 12px;
+    max-width: 380px;
+    font-size: 13px;
+}

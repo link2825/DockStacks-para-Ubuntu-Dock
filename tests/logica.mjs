@@ -8,6 +8,7 @@ const source = readFileSync(new URL('../extension/extension.js', import.meta.url
     .replace('export default class FolderIsland extends Extension', 'class FolderIsland extends Extension');
 const settings = values => ({
     values: {...values},
+    get_string(key) { return this.values[key] ?? ""; },
     get_boolean(key) { return this.values[key]; },
     set_boolean(key, value) { this.values[key] = value; },
     connect() { return 1; },
@@ -28,8 +29,11 @@ class InjectionManager {
 const context = vm.createContext({
     Extension: class {}, InjectionManager,
     Gio: {SettingsSchemaSource: {get_default: () => ({lookup: () => ({has_key: () => true})})},
-        Settings: function () { return dockSettings; }},
-    GLib: {UserDirectory: {DIRECTORY_DOWNLOAD: 0, DIRECTORY_DOCUMENTS: 1, DIRECTORY_PICTURES: 2}},
+        Settings: function () { return dockSettings; },
+        ThemedIcon: {new: name => ({theme: name})},
+        FileIcon: {new: file => ({file})},
+        File: {new_for_path: path => path}},
+    GLib: {FileTest: {IS_REGULAR: 1}, file_test: path => path === '/icons/valid.svg', UserDirectory: {DIRECTORY_DOWNLOAD: 0, DIRECTORY_DOCUMENTS: 1, DIRECTORY_PICTURES: 2}},
     Shell: {AppSystem: {get_default: () => ({get_running: () => apps})}},
     Main: {activateWindow: window => { activated = window; }},
     St: {ThemeContext: {get_for_stage: () => ({scale_factor: 1})}}, global: {stage: {}},
@@ -96,3 +100,78 @@ assert.throws(() => dash._adjustIconSize(), /simulated/);
 assert.equal(dash._maxWidth, 1000);
 extension._removeSpaceBudget();
 console.log('OK: agrupación, activación, restauración de preferencias y reserva de espacio');
+
+// Custom icons apply immediately; a deleted file falls back to the original.
+extension._defaultIcon = key => ({file: `bundled/${key}.png`});
+const icon = {_dockStacksKey: 'icon-stack', _dockStacksFallback: 'view-grid-symbolic'};
+extension._buttons = [icon];
+for (const [value, kind, expected] of [
+    ['applications-other-symbolic', 'theme', 'applications-other-symbolic'],
+    ['/icons/valid.svg', 'file', '/icons/valid.svg'],
+    ['/icons/deleted.svg', 'file', 'bundled/icon-stack.png'],
+    ['', 'file', 'bundled/icon-stack.png'],
+]) {
+    extension._settings = settings({'icon-stack': value});
+    extension._updateIcons();
+    assert.equal(icon.gicon[kind], expected);
+}
+console.log('OK: iconos del tema, archivo local y recuperación ante archivo eliminado');
+
+assert.equal(extension._appName({get_id: () => 'com.github.link2825.DockStacks.desktop', get_name: () => 'com.github.lin…'}), 'DockStacks');
+assert.equal(extension._appName({get_id: () => 'terminal.desktop', get_name: () => 'Terminal'}), 'Terminal');
+let deleted = [];
+context.global.get_current_time = () => 123;
+extension._tooltip = null;
+const closable = {skip_taskbar: false, can_close: () => true, delete: time => deleted.push(time)};
+const protectedWindow = {skip_taskbar: false, can_close: () => false, delete: () => {throw Error('No debe cerrar');}};
+const hiddenWindow = {skip_taskbar: true, can_close: () => true, delete: () => {throw Error('No debe cerrar');}};
+extension._closeApplication({get_windows: () => [closable, protectedWindow, hiddenWindow]});
+assert.deepEqual(deleted, [123]);
+console.log('OK: identificación de DockStacks y solicitud de cierre normal de ventanas');
+
+// The context menu uses its own modal manager and never replaces/closes the stack.
+let parentClosed = 0;
+let contextAdded = 0;
+let contextRemoved = 0;
+const parent = {close() { parentClosed++; }, removeAll() { throw Error('No reemplazar el stack'); }};
+extension._menus = [{menu: parent}];
+extension._stackState = {menu: parent};
+extension._manager = {addMenu() { throw Error('No compartir gestor del stack'); }};
+context.Main.uiGroup = {add_child() {}};
+context.St.Side = {BOTTOM: 0};
+class ContextMenu {
+    constructor(button) { this.sourceActor = button; this.actor = {add_style_class_name() {}, hide() {}}; this.items = []; }
+    addMenuItem(item) { this.items.push(item); }
+    connect(_signal, callback) { this.changed = callback; }
+    open() { this.isOpen = true; this.changed?.(this, true); }
+    close() { this.isOpen = false; this.changed?.(this, false); }
+    destroy() { this.destroyed = true; }
+}
+context.PopupMenu = {
+    PopupMenu: ContextMenu,
+    PopupMenuManager: class {
+        addMenu() { contextAdded++; }
+        removeMenu() { contextRemoved++; }
+    },
+    PopupMenuItem: class {
+        constructor(text) { this.text = text; }
+        setSensitive(value) { this.sensitive = value; }
+        connect(_signal, callback) { this.activate = callback; }
+    },
+};
+const anchor = {};
+const contextualApp = {get_id: () => 'terminal.desktop', get_name: () => 'Terminal', get_windows: () => [closable]};
+extension._showAppContext(contextualApp, anchor);
+const child = extension._appContext;
+assert.equal(child.sourceActor, anchor);
+assert.equal(child.isOpen, true);
+assert.equal(parentClosed, 0);
+assert.equal(contextAdded, 1);
+child.items[1].activate();
+assert.equal(child.isOpen, false);
+assert.equal(parentClosed, 0);
+extension._destroyAppContext();
+assert.equal(child.destroyed, true);
+assert.equal(contextRemoved, 1);
+assert.equal(extension._appContext, null);
+console.log('OK: menú anclado al icono, stack conservado al abrir y cerrar aplicación, limpieza del contexto');

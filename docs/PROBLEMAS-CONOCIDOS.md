@@ -1,48 +1,26 @@
-# Problemas conocidos y comprobaciones pendientes
+# Alcance y limitaciones de la versión 10 estable
 
-## Accesos ocultos cuando el dock se llena
+## Validación confirmada
 
-**Confirmado por el usuario en la versión 2. Persistía en la versión 3. La versión 4 incluye una corrección todavía pendiente de confirmación visual.**
+Manuel confirmó el funcionamiento de la versión 10 en su equipo Ubuntu 26.04.1 LTS con GNOME Shell 50.1 y Ubuntu Dock, y autorizó su publicación como estable.
 
-Al abrir numerosas aplicaciones sin anclar, el dock incorpora sus iconos. El bloque de carpetas comparte su contenedor desplazable, pero el cálculo de espacio de Ubuntu Dock no reserva adecuadamente el ancho añadido. Algunos accesos pueden quedar ocultos cerca del botón de aplicaciones.
+Las incidencias del gestor bloqueado, identificación genérica de DockStacks, menú contextual que sustituía el stack y selector que abría solo la raíz del tema se corrigieron durante las versiones 6–9. La versión 10 incorpora cuatro iconos propios y restauración global, comprobados por el usuario.
 
-![Prueba real de saturación](capturas/03-integracion-y-saturacion.webp)
+## Compatibilidad por ampliar
 
-### Reproducción
+- Varios monitores y escalado alto.
+- Dock vertical y configuraciones de ocultación automática diferentes.
+- Muchos favoritos que saturen el dock.
+- Carpetas con miles de elementos.
+- Versiones de GNOME distintas de 50 y docks distintos de Ubuntu Dock.
 
-1. Activar Ubuntu Dock y DockStacks.
-2. Mantener un número elevado de favoritos.
-3. Abrir suficientes aplicaciones adicionales para llenar la barra.
-4. Comprobar que las tres carpetas siguen accesibles y no quedan ocultas.
+La integración utiliza estructuras internas de Ubuntu Dock y puede requerir adaptación si cambian. Se integra en el monitor principal.
 
-### Corrección implementada en v4, pendiente de validación
+## Comportamiento esperado
 
-Se colocan los controles fuera del área desplazable, se reserva su espacio en el cálculo de iconos y se limita el área desplazable de aplicaciones. Un stack agrupa las aplicaciones abiertas sin anclar. Falta comprobar el resultado en GNOME, especialmente con muchos favoritos.
-
-### Alternativa temporal
-
-Ocultar del dock las aplicaciones abiertas sin anclar:
-
-```bash
-gsettings set org.gnome.shell.extensions.dash-to-dock show-running false
-```
-
-Se puede cambiar entre aplicaciones con Alt+Tab. Para restaurar la opción:
-
-```bash
-gsettings set org.gnome.shell.extensions.dash-to-dock show-running true
-```
-
-Desde la versión 4 la extensión aplica show-running=false durante el uso del stack y restaura el valor previo al desactivarse. En v2 y v3 este ajuste era manual.
-
-## Scroll de la versión 3
-
-Confirmado por el usuario, con captura de 58 elementos en cuatro columnas y barra de scroll. Validar una carpeta con más de 12 elementos, llegar al último, abrir un archivo al final, cerrar el panel durante la carga y volver a abrirlo.
-
-## Compatibilidad
-
-Pendiente de verificar: varios monitores, escalado alto, posiciones verticales del dock, ocultación automática y carpetas con miles de entradas. No se promete compatibilidad con otro GNOME u otro dock.
-
-## Stack de la versión 4
-
-Implementado; pruebas de lógica satisfactorias. La apertura del panel morado está confirmada en captura con tres aplicaciones. Pendiente de probar selección de una aplicación con una ventana, selección por título si hay varias, actualización al cerrar aplicaciones y restauración del comportamiento previo del dock al desactivar la extensión.
+- Después de instalar o actualizar hay que cerrar sesión completamente y volver a entrar.
+- Las personalizaciones anteriores se conservan; Restaurar iconos por defecto aplica el conjunto propio.
+- Las imágenes personalizadas se copian a los datos del usuario; restaurar iconos no las borra.
+- El cierre de aplicaciones es normal: una aplicación puede mostrar un aviso de documentos sin guardar.
+- El listado de carpetas no incluye archivos ocultos ni miniaturas del contenido.
+- No incluye copiar, mover, borrar ni arrastrar y soltar.
