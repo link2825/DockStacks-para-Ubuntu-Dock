@@ -5,5 +5,9 @@
     <key name="icon-size" type="i"><default>36</default><range min="24" max="64"/><summary>Tamaño de iconos</summary></key>
     <key name="saved-show-running" type="b"><default>true</default><summary>Valor previo de mostrar aplicaciones abiertas</summary></key>
     <key name="show-running-saved" type="b"><default>false</default><summary>Hay una preferencia del dock pendiente de restaurar</summary></key>
+    <key name="icon-stack" type="s"><default>'view-grid-symbolic'</default><summary>Icono de aplicaciones abiertas</summary></key>
+    <key name="icon-downloads" type="s"><default>'folder-download-symbolic'</default><summary>Icono de Descargas</summary></key>
+    <key name="icon-documents" type="s"><default>'folder-documents-symbolic'</default><summary>Icono de Documentos</summary></key>
+    <key name="icon-pictures" type="s"><default>'folder-pictures-symbolic'</default><summary>Icono de Imágenes</summary></key>
   </schema>
 </schemalist>

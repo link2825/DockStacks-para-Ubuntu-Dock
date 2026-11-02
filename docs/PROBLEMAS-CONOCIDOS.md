@@ -46,3 +46,9 @@ Pendiente de verificar: varios monitores, escalado alto, posiciones verticales d
 ## Stack de la versión 4
 
 Implementado; pruebas de lógica satisfactorias. La apertura del panel morado está confirmada en captura con tres aplicaciones. Pendiente de probar selección de una aplicación con una ventana, selección por título si hay varias, actualización al cerrar aplicaciones y restauración del comportamiento previo del dock al desactivar la extensión.
+
+## Gestor e iconos de la versión 5
+
+Pendiente de prueba visual en Ubuntu/GNOME 50: abrir el gestor, instalar/actualizar, cerrar sesión y volver a entrar, comprobar el estado y habilitar/deshabilitar. Abrir Personalizar iconos, elegir PNG y SVG, aplicar un nombre de icono del tema y restaurar los cuatro valores originales. Comprobar también cancelación del selector y persistencia tras reiniciar. Las pruebas automatizadas verifican la selección del icono y el fallback cuando falta el archivo, no el renderizado GTK/GNOME.
+
+Si se abre la personalización antes de cerrar sesión tras actualizar desde v4, pueden seguir cargadas las preferencias anteriores. Cierra sesión completamente para cargar el código y esquema de v5.
