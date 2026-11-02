@@ -1,12 +1,12 @@
 # DockStacks para Ubuntu Dock · GNOME 50
 
+![DockStacks con el panel de aplicaciones abiertas](docs/capturas/05-stack-aplicaciones.webp)
+
 Extensión comunitaria que añade **Descargas, Documentos e Imágenes dentro de Ubuntu Dock**, separadas de las aplicaciones por una línea, junto a un **stack de aplicaciones abiertas**. Un clic abre un panel para explorar la carpeta y abrir archivos con sus aplicaciones predeterminadas.
 
 El proyecto nació para reproducir el acceso a carpetas del dash de Luma en Ubuntu, conservando Ubuntu Dock. No es un componente oficial de Ubuntu, GNOME, Luma ni macOS.
 
 Antes llamado **Carpetas Isla**. Se conserva el UUID `carpetas-isla@manuel.local` y el esquema de ajustes para actualizar instalaciones existentes.
-
-![DockStacks con el panel de aplicaciones abiertas](docs/capturas/05-stack-aplicaciones.webp)
 
 ## Funciones
 
