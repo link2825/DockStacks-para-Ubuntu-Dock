@@ -42,9 +42,6 @@ export default class FolderIsland extends Extension {
         this._menus = [];
         this._buttons = [];
         this._settings = this.getSettings();
-        this._iconsChanged = this._settings.connect('changed', (_settings, key) => {
-            if (key.startsWith('icon-')) this._updateIcons();
-        });
         this._enableStackMode();
         this._manager = new PopupMenu.PopupMenuManager(Main.layoutManager);
         this._overviewShow = Main.overview.connect('showing', () => {
@@ -56,22 +53,6 @@ export default class FolderIsland extends Extension {
             this._syncDock();
             return GLib.SOURCE_CONTINUE;
         });
-    }
-
-    _applyIcon(actor) {
-        const value = this._settings.get_string(actor._dockStacksKey).trim();
-        try {
-            if (value.startsWith('/') && GLib.file_test(value, GLib.FileTest.IS_REGULAR))
-                actor.gicon = Gio.FileIcon.new(Gio.File.new_for_path(value));
-            else
-                actor.gicon = Gio.ThemedIcon.new(value && !value.startsWith('/') ? value : actor._dockStacksFallback);
-        } catch (_) {
-            actor.gicon = Gio.ThemedIcon.new(actor._dockStacksFallback);
-        }
-    }
-
-    _updateIcons() {
-        for (const actor of this._buttons) this._applyIcon(actor);
     }
 
     _findDock() {
@@ -146,9 +127,6 @@ export default class FolderIsland extends Extension {
                 x_align: Clutter.ActorAlign.CENTER, y_align: Clutter.ActorAlign.CENTER});
             const image = new St.Icon({icon_name: icon, icon_size: this._dash.iconSize});
             button.set_child(image);
-            image._dockStacksKey = `icon-${fallback.toLowerCase()}`;
-            image._dockStacksFallback = icon;
-            this._applyIcon(image);
             this._buttons.push(image);
             this._island.add_child(button);
             const menu = new PopupMenu.PopupMenu(button, 0.5, side);
@@ -260,9 +238,6 @@ export default class FolderIsland extends Extension {
             can_focus: true, accessible_name: 'Aplicaciones abiertas', track_hover: true});
         const content = new St.Widget({layout_manager: new Clutter.BinLayout()});
         const icon = new St.Icon({icon_name: 'view-grid-symbolic', icon_size: this._dash.iconSize});
-        icon._dockStacksKey = 'icon-stack';
-        icon._dockStacksFallback = 'view-grid-symbolic';
-        this._applyIcon(icon);
         this._buttons.push(icon);
         content.add_child(icon);
         this._runningBadge = new St.Label({text: '0', style_class: 'ci-running-count',
@@ -518,8 +493,6 @@ export default class FolderIsland extends Extension {
         this._removeIsland();
         this._restoreStackMode();
         this._manager = null;
-        if (this._iconsChanged) this._settings.disconnect(this._iconsChanged);
-        this._iconsChanged = 0;
         this._settings = null;
     }
 }

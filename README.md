@@ -39,31 +39,7 @@ No se presenta esta versión como una publicación estable o validada en múltip
 
 Depende de la estructura interna de Ubuntu Dock (`dashtodockBoxContainer` y el objeto del dash). Una actualización del dock puede necesitar una adaptación. Se integra en el monitor principal. La compatibilidad con otras versiones de GNOME o con otros docks no está comprobada.
 
-## Instalador visual y personalización (versión 5)
-
-Descarga el proyecto mediante **Code → Download ZIP**, descomprímelo y, desde su carpeta, ejecuta:
-
-```bash
-bash abrir-instalador.sh
-```
-
-La ventana permite **Instalar / actualizar**, **Habilitar**, **Deshabilitar** y abrir **Personalizar iconos**. Tras instalar crea un acceso **DockStacks** en el menú de aplicaciones; el gestor queda guardado en tu carpeta de usuario y puedes eliminar la descarga.
-
-Después de instalar o actualizar, **cierra sesión completamente y vuelve a entrar**. GNOME conserva el código y los esquemas anteriores durante la sesión. Después abre DockStacks desde el menú.
-
-En **Personalizar iconos** puedes cambiar el stack, Descargas, Documentos e Imágenes: escribe un nombre del tema y pulsa aplicar, o pulsa el botón de carpeta para elegir una imagen **PNG/SVG**. Verás una vista previa; cada fila tiene un botón para restaurar su icono original. Los archivos elegidos se copian al directorio de datos de DockStacks; los iconos cambian sin cerrar sesión una vez cargada v5. No cambia los iconos de los archivos dentro de las carpetas.
-
-Requiere Python 3, PyGObject, GTK 4 y libadwaita. Si faltan componentes:
-
-```bash
-sudo apt install python3-gi gir1.2-gtk-4.0 gir1.2-adw-1 libglib2.0-bin
-```
-
-El gestor se abre con tu usuario normal, **sin sudo**. Consulta el estado real a GNOME Shell y muestra los errores de instalación. Los ajustes de iconos también están disponibles en `gnome-extensions prefs carpetas-isla@manuel.local`.
-
-**Estado de v5:** pruebas de lógica y comprobaciones de sintaxis y empaquetado superadas. Pendiente de prueba visual en Ubuntu/GNOME 50; el entorno de desarrollo no dispone de GTK ni sesión GNOME.
-
-## Instalación por terminal y actualización
+## Instalación y actualización
 
 Descarga el proyecto mediante **Code → Download ZIP**, descomprímelo y abre una terminal en la carpeta que contiene `instalar.sh`:
 

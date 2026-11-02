@@ -2,17 +2,6 @@
 
 Las versiones son iteraciones del prototipo, no una declaración de estabilidad. Desarrollo inicial: 1–2 de noviembre de 2026.
 
-## Versión 5 — Gestor visual e iconos personalizables
-
-- Gestor nativo GTK 4/libadwaita para instalar, actualizar, habilitar y deshabilitar.
-- Estado consultado a GNOME Shell y mensajes de error visibles; operaciones de instalación asíncronas.
-- Acceso persistente DockStacks en el menú de aplicaciones tras instalar.
-- Preferencias con vista previa y selección PNG/SVG o nombre de icono del tema para los cuatro botones.
-- Copia local de imágenes, restauración por botón y aplicación de iconos en vivo.
-- Recuperación al icono original si se elimina un archivo personalizado.
-- Empaquetado con esquemas GSettings compilados y pruebas de iconos.
-- Pendiente de validación visual en GNOME 50; se requiere cerrar sesión después de actualizar.
-
 ## Nombre del proyecto — DockStacks para Ubuntu Dock
 
 - Nuevo nombre público y metadatos; se conserva el identificador interno para mantener las actualizaciones.
