@@ -1,0 +1,11 @@
+{
+  "uuid": "carpetas-isla@manuel.local",
+  "name": "DockStacks para Ubuntu Dock",
+  "description": "Carpetas con scroll y stack de aplicaciones abiertas integrados en Ubuntu Dock, con separador y reserva de espacio.",
+  "shell-version": [
+    "50"
+  ],
+  "settings-schema": "org.gnome.shell.extensions.carpetas-isla",
+  "version": 4,
+  "url": "https://github.com/link2825/DockStacks-para-Ubuntu-Dock"
+}

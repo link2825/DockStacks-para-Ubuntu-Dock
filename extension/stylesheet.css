@@ -1,0 +1,24 @@
+.ci-integrated { spacing: 4px; padding: 0 4px 0 0; }
+.ci-folder { border-radius: 10px; padding: 5px; color: white; }
+.ci-downloads { background-color: #29659b; }
+.ci-documents { background-color: #87603d; }
+.ci-pictures { background-color: #337a52; }
+.ci-folder:hover, .ci-folder:focus { box-shadow: inset 0 0 0 2px rgba(255,255,255,0.75); }
+.ci-folder:active { background-color: #5075b5; }
+.ci-popup .popup-menu-content { background-color: rgba(26,27,38,0.97); border-radius: 18px; padding: 14px; border: 1px solid rgba(255,255,255,0.15); color: #f5f5fa; }
+.ci-header { spacing: 16px; min-width: 340px; }
+.ci-title { font-weight: bold; font-size: 15px; }
+.ci-subtitle { font-size: 11px; color: #b8b9ca; }
+.ci-open { background-color: #426ca7; border-radius: 8px; padding: 7px 12px; color: white; }
+.ci-open:hover, .ci-open:focus { background-color: #5982bf; }
+.ci-empty { padding: 26px 12px; color: #b8b9ca; }
+.ci-grid { padding: 12px 0; }
+.ci-tile { width: 84px; border-radius: 10px; padding: 7px; }
+.ci-tile:hover, .ci-tile:focus { background-color: rgba(255,255,255,0.12); }
+.ci-tile-box { spacing: 6px; }
+.ci-file-label { width: 84px; text-align: center; font-size: 11px; }
+.ci-footer { font-size: 11px; color: #b8b9ca; }
+
+.ci-running { background-color: #53518c; }
+.ci-running-count { font-size: 10px; color: white; background-color: #25243f; border-radius: 6px; padding: 0 3px; }
+.ci-window-count { font-size: 10px; color: #b8b9ca; }

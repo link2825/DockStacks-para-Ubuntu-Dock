@@ -1,0 +1,9 @@
+<schemalist>
+  <schema id="org.gnome.shell.extensions.carpetas-isla" path="/org/gnome/shell/extensions/carpetas-isla/">
+    <key name="right-margin" type="i"><default>20</default><range min="0" max="3000"/><summary>Distancia al borde derecho</summary></key>
+    <key name="bottom-margin" type="i"><default>16</default><range min="0" max="2000"/><summary>Distancia al borde inferior</summary></key>
+    <key name="icon-size" type="i"><default>36</default><range min="24" max="64"/><summary>Tamaño de iconos</summary></key>
+    <key name="saved-show-running" type="b"><default>true</default><summary>Valor previo de mostrar aplicaciones abiertas</summary></key>
+    <key name="show-running-saved" type="b"><default>false</default><summary>Hay una preferencia del dock pendiente de restaurar</summary></key>
+  </schema>
+</schemalist>
