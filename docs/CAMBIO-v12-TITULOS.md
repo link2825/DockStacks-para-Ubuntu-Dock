@@ -29,7 +29,7 @@ Verificar que se conservaron iconos personalizados, habilitación y la preferenc
 
 ## Resultado disponible
 
-Pruebas de lógica y empaquetado superadas. Actualización real 11 → 12 confirmada por el usuario; falta comprobar los títulos después de cerrar sesión.
+Pruebas de lógica y empaquetado superadas. Actualización real 11 → 12 y visibilidad de los títulos después de cerrar sesión confirmadas por Manuel el 2 de noviembre de 2026.
 
 
 ## Evidencia del actualizador real — 2 de noviembre de 2026
@@ -40,4 +40,15 @@ Manuel confirmó que la versión 11 detectó v12.0.0 y completó la actualizaci�
 
 ![Instalación de v12.0.0 completada desde el gestor](capturas/13-actualizacion-instalada.webp)
 
-La ventana sigue mostrando «estable 11» porque ese proceso continúa cargado hasta cerrarlo. La comprobación de los títulos y de la versión activa después de cerrar sesión sigue pendiente. La revisión diaria permanece desactivada en las capturas.
+La ventana sigue mostrando «estable 11» porque ese proceso continúa cargado hasta cerrarlo. La comprobación posterior al cierre de sesión se completó con éxito, como se documenta a continuación. La revisión diaria permanece desactivada en las capturas.
+
+
+## Resultado final confirmado — 2 de noviembre de 2026
+
+Manuel cerró sesión después de actualizar desde el gestor y confirmó el éxito de la prueba. Las capturas posteriores muestran los títulos nativos «Aplicaciones abiertas» y «Documentos» sobre los controles de DockStacks.
+
+![Título Aplicaciones abiertas visible tras actualizar y volver a iniciar sesión](capturas/14-titulo-aplicaciones-confirmado.webp)
+
+![Título Documentos visible tras actualizar y volver a iniciar sesión](capturas/15-titulo-documentos-confirmado.webp)
+
+**Estado de la prueba: completada con éxito.** La detección, instalación desde el gestor, retorno a la sesión y corrección visual quedan documentadas. No se ha realizado una prueba adicional de notificación diaria, y la revisión automática sigue siendo opcional.

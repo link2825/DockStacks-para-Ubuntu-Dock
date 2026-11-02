@@ -90,13 +90,13 @@ Capturas reales facilitadas por Manuel, optimizadas a WebP.
 
 ## Corrección de títulos — versión 12
 
-La versión 12 mejora la visibilidad de los títulos de los cuatro controles. Incluye pruebas de medición, posición y cambio entre iconos. Consulta el [detalle de la incidencia y plan de prueba](docs/CAMBIO-v12-TITULOS.md).
+La versión 12 mejora la visibilidad de los títulos de los cuatro controles. Incluye pruebas de medición, posición y cambio entre iconos. Manuel confirmó la actualización real 11 → 12 desde el gestor y el resultado visual después de cerrar sesión; la documentación incluye las capturas de éxito. Consulta el [detalle de la incidencia y plan de prueba](docs/CAMBIO-v12-TITULOS.md).
 
 Para probar el actualizador desde la versión 11: **Buscar actualizaciones → Ver cambios → Actualizar ahora**. Tras instalar, cierra el gestor y cierra sesión. La revisión diaria permanece opcional y conserva su estado anterior.
 
 ## Validación y alcance
 
-El usuario confirmó el funcionamiento visual de la versión 10. La versión 11 añade el actualizador, con pruebas automatizadas y pendiente de comprobar el aviso real con la siguiente publicación. Durante las pruebas se comprobaron habilitación/deshabilitación, preferencias, selección y restauración de iconos, identidad de la aplicación, scroll y cierre de aplicaciones desde el stack.
+El usuario confirmó el funcionamiento visual de la versión 10. La versión 11 añadió el actualizador. La detección e instalación real 11 → 12 y los títulos de la versión 12 quedaron confirmados por el usuario, con capturas de antes y después. La notificación diaria opcional no forma parte de esa prueba. Durante las pruebas se comprobaron habilitación/deshabilitación, preferencias, selección y restauración de iconos, identidad de la aplicación, scroll y cierre de aplicaciones desde el stack.
 
 Las pruebas automatizadas verifican agrupación y activación, restauración de preferencias del dock, reserva de espacio, iconos personalizados y predeterminados, búsqueda de carpetas de iconos, restauración global y mantenimiento del stack al abrir su menú contextual. También se revisan sintaxis, esquemas compilados, transparencia de los recursos e integridad de los paquetes.
 

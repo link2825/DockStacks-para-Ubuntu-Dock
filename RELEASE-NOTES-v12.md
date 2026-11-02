@@ -18,4 +18,4 @@ Se conservan los iconos personalizados, ajustes y estado de habilitación. La re
 
 ## Validación
 
-Pruebas automatizadas de los cuatro textos, tamaño inicial sin asignación previa, capa superior, cambio rápido entre iconos, límites del monitor, orientación vertical y limpieza. También pasan las pruebas existentes y del actualizador. Falta la comprobación visual del usuario y la prueba real de actualización 11 → 12.
+Pruebas automatizadas de los cuatro textos, tamaño inicial sin asignación previa, capa superior, cambio rápido entre iconos, límites del monitor, orientación vertical y limpieza. También pasan las pruebas existentes y del actualizador. El 2 de noviembre de 2026, Manuel confirmó con éxito la detección e instalación 11 → 12 desde el gestor y la corrección visual después de cerrar sesión. Las capturas se conservan en docs/CAMBIO-v12-TITULOS.md.
