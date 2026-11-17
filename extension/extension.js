@@ -87,7 +87,11 @@ export default class FolderIsland extends Extension {
             const actor = pending.pop();
             if (actor.name === 'dashtodockBoxContainer') {
                 const dash = actor.get_children().find(child => child._delegate?.iconSize)?._delegate;
-                if (dash && dash._monitorIndex === Main.layoutManager.primaryIndex)
+                if (dash && dash._monitorIndex === Main.layoutManager.primaryIndex &&
+                    dash._dashContainer?.insert_child_above && dash._scrollView &&
+                    typeof dash._adjustIconSize === 'function' &&
+                    typeof dash._queueRedisplay === 'function' &&
+                    Number.isFinite(dash.iconSize))
                     return {actor, dash};
             }
             pending.push(...actor.get_children());
